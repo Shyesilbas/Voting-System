@@ -1,0 +1,1 @@
+ALTER TABLE voter ADD COLUMN has_voted VARCHAR(3);
