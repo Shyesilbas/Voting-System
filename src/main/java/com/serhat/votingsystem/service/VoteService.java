@@ -5,20 +5,29 @@ import com.serhat.votingsystem.repository.CandidateRepository;
 import com.serhat.votingsystem.repository.UserRepository;
 import com.serhat.votingsystem.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VoteService {
     private final VoteRepository voteRepository;
     private final CandidateRepository candidateRepository;
     private final UserRepository userRepository;
 
-    public VoteResponse castVote(Integer userId, Integer candidateId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));
+    @Transactional
+    public VoteResponse castVote(String userName, Integer candidateId) {
+        String lowercaseUsername = userName.toLowerCase();
+
+        User user = userRepository.findByNameIgnoreCase(lowercaseUsername)
+                .orElseThrow(() -> new RuntimeException("User with name " + userName + " not found"));
+
+        log.info("User voting: {} {}", user.getName(), user.getSurname());
+
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new RuntimeException("Candidate with ID " + candidateId + " not found"));
 
@@ -42,14 +51,16 @@ public class VoteService {
         user.setHasVoted(HasVoted.YES);
         userRepository.save(user);
 
+
         return new VoteResponse(
-                userId,
+                user.getId(),
                 user.getName(),
                 LocalDateTime.now(),
                 candidateId,
                 candidate.getName(),
                 candidate.getParty()
         );
+
     }
 
 }
