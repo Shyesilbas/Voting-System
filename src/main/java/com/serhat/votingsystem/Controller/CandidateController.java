@@ -16,7 +16,7 @@ import java.util.List;
 public class CandidateController {
     private final CandidateService service;
 
-    @GetMapping
+    @GetMapping("/findAllCandidates")
     public ResponseEntity<List<CandidateResponse>> findAllCandidates(){
         return ResponseEntity.ok(service.findAllCandidates());
     }
