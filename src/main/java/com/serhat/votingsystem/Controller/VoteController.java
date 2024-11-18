@@ -1,5 +1,6 @@
 package com.serhat.votingsystem.Controller;
 
+import com.serhat.votingsystem.dto.ResultResponse;
 import com.serhat.votingsystem.dto.VoteRequest;
 import com.serhat.votingsystem.entity.VoteResponse;
 import com.serhat.votingsystem.service.VoteService;
@@ -20,5 +21,10 @@ public class VoteController {
     public ResponseEntity<VoteResponse> castVote(Principal principal, @RequestBody VoteRequest voteRequest){
         String userName = principal.getName();
         return ResponseEntity.ok(voteService.castVote(userName, voteRequest.candidateId()));
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<ResultResponse> displayElectionResult(){
+        return ResponseEntity.ok(voteService.resultInformation());
     }
 }

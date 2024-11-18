@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return   httpSecurity.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/candidates/findAllCandidates").permitAll()
+                        .requestMatchers("/api/candidates/findAllCandidates","votes/results").permitAll()
                         .requestMatchers("/api/user/allUsers").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2-> oauth2
