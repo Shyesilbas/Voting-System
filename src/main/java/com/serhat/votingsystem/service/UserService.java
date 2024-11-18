@@ -5,6 +5,8 @@ import com.serhat.votingsystem.entity.Candidate;
 import com.serhat.votingsystem.entity.User;
 import com.serhat.votingsystem.entity.Vote;
 import com.serhat.votingsystem.entity.VoteResponse;
+import com.serhat.votingsystem.exception.UserNotFoundException;
+import com.serhat.votingsystem.exception.VoteNotFoundException;
 import com.serhat.votingsystem.repository.CandidateRepository;
 import com.serhat.votingsystem.repository.UserRepository;
 import com.serhat.votingsystem.repository.VoteRepository;
@@ -39,7 +41,7 @@ public class UserService {
         String lowercaseUsername = name.toLowerCase();
 
         User user = repository.findByNameIgnoreCase(lowercaseUsername)
-                .orElseThrow(() -> new RuntimeException("User with name " + name + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with name " + name + " not found"));
         return new UserResponse(
                 user.getId(),
                 user.getName(),
@@ -54,10 +56,10 @@ public class UserService {
         String lowercaseUsername = name.toLowerCase();
 
         User user = repository.findByNameIgnoreCase(lowercaseUsername)
-                .orElseThrow(()-> new RuntimeException("User Not Found"));
+                .orElseThrow(()-> new UserNotFoundException("User Not Found"));
 
         Vote vote = voteRepository.findByUserName(user.getName())
-                .orElseThrow(()-> new RuntimeException("Vote not found for : "+name));
+                .orElseThrow(()-> new VoteNotFoundException("Vote not found for : "+name));
 
         return new VoteResponse(
                 user.getId(),

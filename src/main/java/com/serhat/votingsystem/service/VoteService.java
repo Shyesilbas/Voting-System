@@ -1,6 +1,10 @@
 package com.serhat.votingsystem.service;
 
 import com.serhat.votingsystem.entity.*;
+import com.serhat.votingsystem.exception.CandidateNotFoundException;
+import com.serhat.votingsystem.exception.NotAbleToVoteException;
+import com.serhat.votingsystem.exception.UserAlreadyVotedException;
+import com.serhat.votingsystem.exception.UserNotFoundException;
 import com.serhat.votingsystem.repository.CandidateRepository;
 import com.serhat.votingsystem.repository.UserRepository;
 import com.serhat.votingsystem.repository.VoteRepository;
@@ -24,18 +28,18 @@ public class VoteService {
         String lowercaseUsername = userName.toLowerCase();
 
         User user = userRepository.findByNameIgnoreCase(lowercaseUsername)
-                .orElseThrow(() -> new RuntimeException("User with name " + userName + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with name " + userName + " not found"));
 
         log.info("User voting: {} {}", user.getName(), user.getSurname());
 
         Candidate candidate = candidateRepository.findById(candidateId)
-                .orElseThrow(() -> new RuntimeException("Candidate with ID " + candidateId + " not found"));
+                .orElseThrow(() -> new CandidateNotFoundException("Candidate with ID " + candidateId + " not found"));
 
         if (user.getHasVoted().equals(HasVoted.YES)) {
-            throw new RuntimeException("This User has already voted!");
+            throw new UserAlreadyVotedException("This User has already voted!");
         }
         if (user.getAbleToVote().equals(AbleToVote.NO)) {
-            throw new RuntimeException("This User is not able to vote!");
+            throw new NotAbleToVoteException("This User is not able to vote!");
         }
 
         Vote vote = Vote.builder()
