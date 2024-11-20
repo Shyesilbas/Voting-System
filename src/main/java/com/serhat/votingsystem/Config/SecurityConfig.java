@@ -25,6 +25,7 @@ public class SecurityConfig {
         return   httpSecurity.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/candidates/findAllCandidates","votes/results").permitAll()
                         .requestMatchers("/api/user/allUsers").hasRole("ADMIN")
+                        .requestMatchers("/votes/allVotes").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2-> oauth2
                         .jwt(Customizer.withDefaults())
@@ -48,7 +49,6 @@ public class SecurityConfig {
                     Map<String, Object> clientRoles = (Map<String, Object>) resourceAccess.get("votingSystem");
                     List<String> roles = (List<String>) clientRoles.get("roles");
 
-                    // Convert roles to ROLE_ format
                     authorities.addAll(
                             roles.stream()
                                     .map(role -> "ROLE_" + role)

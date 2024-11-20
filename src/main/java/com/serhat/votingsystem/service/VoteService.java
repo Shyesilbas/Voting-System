@@ -118,5 +118,25 @@ public class VoteService {
         );
     }
 
+    public List<VoteResponse> allVotes(){
+       List<User> votedUsers = userRepository.findAll()
+               .stream()
+               .filter(user -> user.getHasVoted().equals(HasVoted.YES))
+               .toList();
+
+       return voteRepository.findAll()
+               .stream()
+               .filter(vote -> votedUsers.contains(vote.getUser()))
+               .map(vote -> new VoteResponse(
+                       vote.getUser().getId(),
+                       vote.getUser().getName(),
+                       vote.getVoteDate(),
+                       vote.getCandidate().getId(),
+                       vote.getCandidate().getName(),
+                       vote.getCandidate().getParty()
+               ))
+               .toList();
+    }
+
 
 }
