@@ -1,0 +1,1 @@
+The Voting System project is an online platform designed to securely manage voting processes. It incorporates Keycloak for authentication and authorization, ensuring user roles and permissions are effectively handled. The system aims to provide a secure and efficient method for managing elections in various settings.
